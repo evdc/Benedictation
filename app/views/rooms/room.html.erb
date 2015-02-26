@@ -110,6 +110,7 @@
     // This current example only uses one keyword, so hardcoding id=0 is okay. This shouldn't stay this way.
     // I'm just trying to minimize confusing things right now.
     var startRecording = function() {
+        console.log("In startRecording")
         if (recorder && recorder.start(0)) console.log("Recording");
     };
     // Stops recording
@@ -119,7 +120,7 @@
     };
 
     var comm = new Icecomm('9gv3ODZorBS2kVuNwnugBeV432PcNX3Qn0HmW33ofxK/u5Xolu');
-    comm.connect("mirror-sound");
+    comm.connect(window.location.pathname);
 
     ///////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////====ICECOMM====/////////////////////////////////
@@ -134,12 +135,12 @@
         comm.on('local', function(options) {
             localVideo.src = options.stream;
             localAudioStream = options.rawStream;
-
+            console.log(localAudioStream.getAudioTracks());
             console.log("Obtained user camera/microphone approval");
 
             // Start the recognizer inside a WebWorker, and set up callbacks for the responses it will post.
             callbackManager = new CallbackManager();
-            spawnWorker("js/recognizer.js", function(worker) {
+            spawnWorker("<%= javascript_path 'recognizer.js' %>", function(worker) {
                 worker.onmessage = function(e) {
                     // This is the case when we have a callback id to be called
                     if (e.data.hasOwnProperty('id')) {
