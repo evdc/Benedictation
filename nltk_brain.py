@@ -175,18 +175,20 @@ def schedule_suggest(cal_parse, words):
 			endtime = starttime + relativedelta(hour=17, minute=0, second=0)
 
 	elif cal_parse[1] == 1:		# Date without a time
+		print words
 		if cal_parse[0][6] == 0 and cal_parse[0][3] == 9 and cal_parse[0][4] == 0:
 			if "next week" in words:
 				starttime = datetime.fromtimestamp(mktime(cal_parse[0])) + relativedelta(hour=8)
-				endtime = starttime + relativedelta(weekday=FR, hour=17)
-		elif cal_parse[0][6] == 0 and cal_parse[0][3] == 9 and cal_parse[0][4] == 0:				
-			if "next month" in words:
-				starttime = datetime.fromtimestamp(mktime(cal_parse[0]))	+ relativedelta(hour=8)
+				endtime = starttime + relativedelta(weekday=FR, hour=17)				
+			elif "next month" in words:
+				starttime = datetime.fromtimestamp(mktime(cal_parse[0])) + relativedelta(hour=8)
 				endtime = starttime + relativedelta(day=31, weekday=FR(-1), hour=17)	# Last Friday of the month.
+				# TODO: change to "last weekday" instead of "last Friday"
 		else:
 			starttime = datetime.fromtimestamp(mktime(cal_parse[0])) + relativedelta(hour=8, minute=0, second=0)
 			endtime = starttime + relativedelta(hour=17)
 
+	print starttime, endtime
 	return starttime, endtime
 
 def wolfram(element):
@@ -212,4 +214,4 @@ if __name__ == "__main__":
 	#schedule_JJ("schedule meeting for tomorrow at 4 pm")
 	#print schedule_meeting(["schedule a meeting for tomorrow at 3 pm"])
 	#run_tests('example_sentences.txt')
-	print interpret(["Can we find a time to meet next Thursday"])
+	print interpret(["Schedule a meeting for next month"])
