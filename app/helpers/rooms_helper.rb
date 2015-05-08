@@ -54,24 +54,26 @@ module RoomsHelper
 
 		case json_hash['api_type']
 		when 'calendar'
-			logger.info "We will access the calendar api!"
+			logger.error "We will access the calendar api!"
 			json_event = calendar_json(json_hash)
 			create_calendar_event(json_event)
 		when 'calendar_show'
-			puts "We will show the calendar"
+			logger.error "We will show the calendar"
 			#json_event = calendar_show_json(json_hash)
 		when 'schedule_suggest'
-			logger.info 'We will find a time that works'
+			logger.error 'We will find a time that works'
 			json_event = schedule_json(json_hash)
 		when 'google_docs'
 			puts "We will access the google docs api!"
+		when 'docs'
+			logger.error "We will access the google docs api!"
 		when 'wolfram'
-			puts "We will access the wolfram alpha api!"
+			logger.error "We will access the wolfram alpha api!"
 			query_wolfram_alpha(json_hash)
 		when 'youtube'
-			logger.info "We will access the youtube api!"
+			logger.error "We will access the youtube api!"
 		when 'wikipedia'
-			logger.info "We will access the wikipedia api!"
+			logger.error "We will access the wikipedia api!"
 			query_wikipedia(json_hash)
 		else
 			"NOTHING HAPPENED!?!?!?!?!??!?!??!?!"
@@ -119,7 +121,6 @@ module RoomsHelper
 			$redis.set("#{current_user.id}:api_html",api_html.to_s)
 			$redis.set("#{current_user.id}:real_api_type", real_api_type)
 	end
-
 
 	def query_wikipedia(json_hash)
 		page = Wikipedia.find( json_hash['query'] )
