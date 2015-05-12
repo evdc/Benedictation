@@ -52,6 +52,8 @@ module RoomsHelper
 		json_hash = JSON.parse(json)
 		logger.info json_hash['api_type']
 
+		return_json = "{}"
+
 		case json_hash['api_type']
 		when 'calendar'
 			logger.error "We will access the calendar api!"
@@ -62,7 +64,7 @@ module RoomsHelper
 			#json_event = calendar_show_json(json_hash)
 		when 'schedule_suggest'
 			logger.error 'We will find a time that works'
-			json_event = schedule_json(json_hash)
+			return_json = schedule_json(json_hash)
 		when 'google_docs'
 			puts "We will access the google docs api!"
 		when 'docs'
@@ -78,6 +80,8 @@ module RoomsHelper
 		else
 			"NOTHING HAPPENED!?!?!?!?!??!?!??!?!"
 		end
+
+		return return_json
 	end
 
 	def query_wolfram_alpha(json_hash)
