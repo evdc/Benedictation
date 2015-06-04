@@ -55,14 +55,13 @@ module ScheduleHelper
 		lower_bound = (json_hash['lower_bound'] || 8).to_i
 		upper_bound = (json_hash['upper_bound'] || 17).to_i
 		tz_offset = json_hash['tz_offset'] || '-0700'
-		nslots = (1.hour / time_resolution) * (upper_bound - lower_bound)
 
 		start_range = DateTime.parse(start_str)
 		end_range   = DateTime.parse(end_str)
 		days = (end_range - start_range).to_i
 
 		attendees = get_attendees()
-		overall_availability = Array.new(days+1) { 2**nslots - 1}
+		overall_availability = Array.new(days+1) { 2**28 - 1}
 		attendees.each do |attendee_email|
 			user_av = get_user_availability(attendee_email, start_str, end_str, lower_bound, upper_bound, time_resolution, tz_offset)
 			overall_availability.each_with_index do |x, i|
@@ -79,7 +78,7 @@ module ScheduleHelper
 	# Get the availability for one user as an array of bit vectors.
 	def get_user_availability(user_email, start_str, end_str, lower_bound, upper_bound, time_resolution, tz_offset)
 
-		nslots = (1.hour / time_resolution) * (upper_bound - lower_bound)
+		nslots = 18
 
 		client = Google::APIClient.new
 		client.authorization.client_id = GoogleAPIKeys["app_id"]
@@ -124,13 +123,13 @@ module ScheduleHelper
 				day_end   = day.to_datetime.change(hour: upper_bound, offset: tz_offset)
 				stime = [event_start, day_start].max
 				etime = [event_end, day_end].min
-				logger.error stime.to_s + " to " + etime.to_s
+				#logger.error stime.to_s + " to " + etime.to_s
 				time_index = (event_start.to_time - day_start.to_time) / time_resolution
 
 				# Loop over the time this event covers, in 30 minute increments.
 				time_resolution = 30.minutes
 				while stime < etime
-					logger.error "time: " + stime.to_s + ", index: " + time_index.to_s
+					#logger.error "time: " + stime.to_s + ", index: " + time_index.to_s
 					bitmask = 1 << time_index
 					userAvailabilityArray[day_index] = userAvailabilityArray[day_index] ^ bitmask
 					stime += time_resolution

@@ -179,7 +179,6 @@ function buildCenterRender(item, div_id, api_clicked) {
                                        '</h2><p class="num-results">' + num_results + ' results' + 
                                        '</p><a class="glyphicon glyphicon-remove suggestion-remove" id="remove_item_id"></a>' +
                                        '<div class="suggestions-datepicker"></div><div class="suggestions-list"></div></div></div>');
-        $('.center-border').append(duration_menu);
 
         // Set up the submit button, only if you're the one who submitted the initial request.
         if(submitter) {
@@ -226,6 +225,8 @@ function buildCenterRender(item, div_id, api_clicked) {
               $('#schedule_submit').click(times, scheduleSubmit);
           }
         });
+
+        $('.center-border').append(duration_menu);
         date_picker.appendTo('.center-border');
     }
 
